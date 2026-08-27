@@ -1,0 +1,43 @@
+{
+    "name": "puff/routing",
+    "description": "Fast, Fiber-safe HTTP route registration and matching for Puff",
+    "type": "library",
+    "keywords": [
+        "php",
+        "router",
+        "routing",
+        "http",
+        "puff"
+    ],
+    "license": "MIT",
+    "require": {
+        "puff/di": "dev-main",
+        "puff/http": "dev-main",
+        "php": "^8.2"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "classmap": [
+            "src/Facades"
+        ],
+        "files": [
+            "lib/puff.php"
+        ],
+        "psr-4": {
+            "Puff\\Routing\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "scripts": {
+        "analyse": "phpstan analyse src lib tests --level=8 --memory-limit=1G",
+        "test": "phpunit tests"
+    }
+}
