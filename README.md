@@ -110,7 +110,7 @@ Router::group([
 
 Nested prefixes, namespaces and pipelines inherit from their parent. A nested prefix beginning with `/`, or a namespace beginning with `\`, replaces the corresponding parent value.
 
-Configure a global pipeline in `config/http.server.php`:
+Configure a global pipeline on an HTTP item in `config/server.php`:
 
 ```php
 'pipeline' => [
