@@ -13,7 +13,7 @@ namespace Puff\Routing;
 
 final readonly class RouteCompiler
 {
-    private const PARAMETER = '/\(([A-Za-z_][A-Za-z0-9_]*):([A-Za-z][A-Za-z0-9_-]*|\*)\)/';
+    private const PARAMETER = '/\(([A-Za-z_][A-Za-z0-9_]*):([A-Za-z][A-Za-z0-9_-]*|\*|[A-Za-z0-9_-]+(?:\|[A-Za-z0-9_-]+)+)\)/';
 
     /** @param array<string, string> $patterns */
     public function __construct(private array $patterns = Router::PATTERNS)
@@ -51,12 +51,13 @@ final readonly class RouteCompiler
             if (isset($parameters[$name])) {
                 throw new \InvalidArgumentException("Duplicate route parameter [{$name}] in [{$path}].");
             }
-            if (!isset($this->patterns[$type])) {
+            $pattern = $this->patterns[$type] ?? $this->inlineEnumPattern($type);
+            if ($pattern === null) {
                 throw new \InvalidArgumentException("Unknown route parameter type [{$type}].");
             }
             $parameters[$name] = true;
             $compiled .= \preg_quote(\substr($path, $offset, $position - $offset), '~');
-            $compiled .= '(?P<' . $name . '>' . $this->patterns[$type] . ')';
+            $compiled .= '(?P<' . $name . '>' . $pattern . ')';
             $offset = $position + \strlen($token);
         }
         $compiled .= \preg_quote(\substr($path, $offset), '~');
@@ -65,5 +66,17 @@ final readonly class RouteCompiler
             throw new \InvalidArgumentException("Invalid compiled route pattern [{$path}].");
         }
         return $pattern;
+    }
+
+    private function inlineEnumPattern(string $type): ?string
+    {
+        if (!\str_contains($type, '|')) {
+            return null;
+        }
+
+        return \implode('|', \array_map(
+            static fn (string $value): string => \preg_quote($value, '~'),
+            \explode('|', $type),
+        ));
     }
 }

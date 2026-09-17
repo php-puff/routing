@@ -131,6 +131,19 @@ final class RouteMatcherTest extends TestCase
         $matcher->match('GET', '/posts/Invalid');
     }
 
+    public function testInlineEnumParameter(): void
+    {
+        $router = new Router(new Request());
+        $router->get('/(page:about|contact|business|faq)', static fn (): string => 'page');
+        $matcher = new RouteMatcher($router->collection());
+
+        self::assertSame(['page' => 'about'], $matcher->match('GET', '/about')->args());
+        self::assertSame(['page' => 'contact'], $matcher->match('GET', '/contact')->args());
+
+        $this->expectException(NotFoundException::class);
+        $matcher->match('GET', '/pricing');
+    }
+
     public function testRejectsUnknownAndDuplicateParameters(): void
     {
         $compiler = new RouteCompiler();

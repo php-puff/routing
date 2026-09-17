@@ -37,6 +37,15 @@ Router::get('/prices/(value:num)', 'Price@show');
 Router::get('/echo/(value:any)', 'Echo@show');
 ```
 
+For a small fixed set of literal values, use an inline enum. It is compiled into a route
+pattern automatically, so no separate `regex()` registration is needed:
+
+```php
+Router::get('/(page:about|contact|business|faq)', 'Page@show');
+```
+
+The controller receives the matched value in its `$page` argument.
+
 Built-in parameter types:
 
 | Type | Pattern | Notes |
