@@ -240,9 +240,7 @@ final class Router
     {
         $parent = $this->groups === [] ? null : $this->groups[\array_key_last($this->groups)];
         $prefix = isset($attributes['prefix']) ? (string) $attributes['prefix'] : '';
-        $prefix = $prefix !== '' && $prefix[0] === '/'
-            ? self::normalizePath($prefix)
-            : self::joinPath($parent['prefix'] ?? '/', self::normalizePath($prefix));
+        $prefix = self::joinPath($parent['prefix'] ?? '/', self::normalizePath($prefix));
         $namespace = self::namespace(
             $parent['namespace'] ?? null,
             isset($attributes['namespace']) ? (string) $attributes['namespace'] : null,

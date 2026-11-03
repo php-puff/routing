@@ -30,7 +30,7 @@ final class RouterTest extends TestCase
         ], static function (Router $router): void {
             $router->group([
                 'id' => 'private',
-                'prefix' => 'private',
+                'prefix' => '/private',
                 'namespace' => 'Api',
                 'pipeline' => ['auth'],
             ], static function (Router $router): void {
@@ -47,6 +47,21 @@ final class RouterTest extends TestCase
         self::assertSame('App\\Controller\\Api\\Profile@index', $route->callable());
         self::assertSame(['global', 'auth', 'ability'], $route->pipeline);
         self::assertSame('en', $route->locale);
+    }
+
+    public function testNestedAbsoluteLookingPrefixesKeepParentPath(): void
+    {
+        $router = new Router(new Request());
+        $router->group(['prefix' => '/v1'], static function (Router $router): void {
+            $router->group([], static function (Router $router): void {
+                $router->group(['prefix' => '/auth'], static function (Router $router): void {
+                    $router->post('/register', static fn (): string => 'registered')->id('register');
+                });
+            });
+        });
+
+        self::assertSame('/v1/auth/register', $router->route('register')?->path);
+        self::assertSame('register', $router->dispatch(new Request('POST', '/v1/auth/register'))->definition()->id);
     }
 
     public function testGroupStackIsClearedWhenCallbackThrows(): void
