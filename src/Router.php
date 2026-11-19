@@ -27,6 +27,7 @@ final class Router
         'hex' => '[A-Fa-f0-9]+',
         'hash' => '[A-Za-z0-9]+',
         'uuid' => '[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}',
+        'ulid' => '[0-7][0-9A-HJKMNP-TV-Za-hjkmnp-tv-z]{25}',
     ];
 
     /** @var list<Route> */

@@ -33,6 +33,7 @@ Router::get('/files/(path:*)', 'File@show');
 Router::get('/colors/(value:hex)', 'Color@show');
 Router::get('/tokens/(value:hash)', 'Token@show');
 Router::get('/events/(id:uuid)', 'Event@show');
+Router::get('/jobs/(id:ulid)', 'Job@show');
 Router::get('/prices/(value:num)', 'Price@show');
 Router::get('/echo/(value:any)', 'Echo@show');
 ```
@@ -58,6 +59,7 @@ Built-in parameter types:
 | `hex` | `[A-Fa-f0-9]+` | Hexadecimal characters |
 | `hash` | `[A-Za-z0-9]+` | Alphanumeric characters |
 | `uuid` | UUID-shaped hexadecimal value | Standard 8-4-4-4-12 shape |
+| `ulid` | Crockford Base32 ULID | 26 characters; excludes I, L, O, and U |
 
 Register an application-specific pattern before declaring routes that use it:
 

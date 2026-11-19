@@ -34,6 +34,30 @@ final class RouteMatcherTest extends TestCase
         self::assertSame(['id' => '42'], $matcher->match('GET', '/users/42')->args());
     }
 
+    public function testMatchesUlidParameters(): void
+    {
+        $router = new Router(new Request());
+        $router->get('/events/(id:ulid)', static fn (): string => 'event');
+        $matcher = new RouteMatcher($router->collection());
+
+        self::assertSame(
+            ['id' => '01ARZ3NDEKTSV4RRFFQ69G5FAV'],
+            $matcher->match('GET', '/events/01ARZ3NDEKTSV4RRFFQ69G5FAV')->args(),
+        );
+        self::assertSame(
+            ['id' => '01arz3ndektsv4rrffq69g5fav'],
+            $matcher->match('GET', '/events/01arz3ndektsv4rrffq69g5fav')->args(),
+        );
+
+        foreach (['81ARZ3NDEKTSV4RRFFQ69G5FAV', '01ARZ3NDEKTSV4RRFFQ69G5FAI'] as $invalid) {
+            try {
+                $matcher->match('GET', '/events/' . $invalid);
+                self::fail("Invalid ULID [{$invalid}] was accepted.");
+            } catch (NotFoundException) {
+            }
+        }
+    }
+
     public function testMatchedParametersAreFiberLocal(): void
     {
         $router = new Router(new Request());
